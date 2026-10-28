@@ -1,0 +1,749 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Planner</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            color: #f1f5f9;
+
+            /* Dark pastel background */
+            background:
+                radial-gradient(circle at 10% 20%, #39445f 0%, transparent 30%),
+                radial-gradient(circle at 90% 80%, #3d4f4b 0%, transparent 30%),
+                linear-gradient(135deg, #172033, #202a3d, #293449);
+
+            background-size: 150% 150%;
+            animation: backgroundMove 15s ease infinite;
+        }
+
+        @keyframes backgroundMove {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+
+        /* Decorative circles */
+
+        .circle {
+            position: fixed;
+            border-radius: 50%;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        .circle1 {
+            width: 300px;
+            height: 300px;
+            background: #9b8bb4;
+            top: -120px;
+            left: -100px;
+        }
+
+        .circle2 {
+            width: 350px;
+            height: 350px;
+            background: #78a89f;
+            bottom: -150px;
+            right: -100px;
+        }
+
+        .circle3 {
+            width: 180px;
+            height: 180px;
+            background: #c6a878;
+            top: 45%;
+            right: 15%;
+        }
+
+
+        /* Header */
+
+        header {
+            text-align: center;
+            padding: 55px 20px 20px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 34px;
+            color: #f5f1ea;
+        }
+
+        header p {
+            color: #aeb9c8;
+            margin-top: 10px;
+        }
+
+
+        /* Main */
+
+        .main {
+            width: 85%;
+            max-width: 900px;
+            margin: 25px auto;
+        }
+
+
+        /* Tasks card */
+
+        .tasks-container {
+            background: rgba(30, 40, 57, 0.82);
+
+            border: 1px solid rgba(255,255,255,0.08);
+
+            border-radius: 22px;
+
+            padding: 32px;
+
+            box-shadow:
+                0 20px 50px rgba(0,0,0,0.25);
+
+            backdrop-filter: blur(12px);
+        }
+
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .section-title h2 {
+            margin: 0;
+
+            color: #e8ddd0;
+
+            font-size: 24px;
+        }
+
+        .section-title p {
+            color: #9eacbb;
+            margin-top: 8px;
+        }
+
+
+        /* Tasks */
+
+        ul {
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            list-style: none;
+
+            background: #303b4e;
+
+            margin-bottom: 13px;
+
+            padding: 17px 18px;
+
+            border-radius: 14px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            border-left: 5px solid #86aaa2;
+
+            box-shadow:
+                0 5px 15px rgba(0,0,0,0.12);
+
+            transition: 0.3s;
+        }
+
+        li:hover {
+            transform: translateX(6px);
+
+            background: #354258;
+        }
+
+
+        .task-info {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .task-name {
+            font-weight: bold;
+            color: #f0ece5;
+            font-size: 16px;
+        }
+
+        .task-date {
+            color: #aeb9c8;
+            font-size: 13px;
+        }
+
+
+        /* Delete */
+
+        .delete {
+            border: none;
+
+            background: #775b63;
+
+            color: #f6e8e8;
+
+            padding: 8px 12px;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .delete:hover {
+            background: #9a6871;
+        }
+
+
+        /* Empty */
+
+        .empty {
+            text-align: center;
+
+            color: #8997a8;
+
+            padding: 35px;
+        }
+
+
+        /* =================================
+           TOP RIGHT ADD BUTTON
+           ================================= */
+
+        .add-container {
+            position: fixed;
+
+            top: 0;
+            right: 0;
+
+            width: 125px;
+            height: 125px;
+
+            overflow: visible;
+
+            z-index: 20;
+        }
+
+
+        /* Quarter circle */
+
+        .add-button {
+            position: absolute;
+
+            top: 0;
+            right: 0;
+
+            width: 125px;
+            height: 125px;
+
+            border: none;
+
+            background: #7fa9a1;
+
+            border-radius: 0 0 0 125px;
+
+            color: white;
+
+            cursor: pointer;
+
+            box-shadow:
+                -5px 5px 25px rgba(0,0,0,0.25);
+
+            transition: 0.35s;
+        }
+
+
+        /* Plus */
+
+        .plus {
+            position: absolute;
+
+            top: 22px;
+            right: 25px;
+
+            font-size: 42px;
+            font-weight: 200;
+
+            transition: 0.35s;
+        }
+
+
+        /* Hover */
+
+        .add-container:hover .add-button {
+            width: 155px;
+            height: 155px;
+
+            background: #91b8b0;
+        }
+
+        .add-container:hover .plus {
+            transform: rotate(90deg);
+        }
+
+
+        /* Text appears on hover */
+
+        .add-label {
+            position: absolute;
+
+            top: 80px;
+            right: 20px;
+
+            width: 110px;
+
+            text-align: center;
+
+            font-size: 12px;
+
+            color: white;
+
+            opacity: 0;
+
+            transform: translateY(-8px);
+
+            transition: 0.3s;
+
+            pointer-events: none;
+        }
+
+        .add-container:hover .add-label {
+            opacity: 1;
+
+            transform: translateY(0);
+        }
+
+
+        /* =================================
+           FORM
+           ================================= */
+
+        .form-box {
+            display: none;
+
+            position: fixed;
+
+            top: 50%;
+            left: 50%;
+
+            transform: translate(-50%, -50%);
+
+            width: 390px;
+
+            background: #283346;
+
+            padding: 30px;
+
+            border-radius: 20px;
+
+            border: 1px solid rgba(255,255,255,0.08);
+
+            box-shadow:
+                0 25px 60px rgba(0,0,0,0.45);
+
+            z-index: 30;
+        }
+
+        .form-box h2 {
+            margin-top: 0;
+
+            text-align: center;
+
+            color: #e8ddd0;
+        }
+
+        .form-box input {
+            width: 100%;
+
+            padding: 13px;
+
+            margin-bottom: 12px;
+
+            border: 1px solid #4a576b;
+
+            background: #354156;
+
+            color: white;
+
+            border-radius: 9px;
+
+            outline: none;
+
+            font-size: 14px;
+        }
+
+        .form-box input:focus {
+            border-color: #86aaa2;
+        }
+
+
+        .save-button {
+            width: 100%;
+
+            padding: 13px;
+
+            border: none;
+
+            border-radius: 9px;
+
+            background: #7fa9a1;
+
+            color: white;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        .save-button:hover {
+            background: #91b8b0;
+        }
+
+
+        .close-button {
+            width: 100%;
+
+            margin-top: 8px;
+
+            padding: 11px;
+
+            border: none;
+
+            border-radius: 9px;
+
+            background: #3b4658;
+
+            color: #cbd5e1;
+
+            cursor: pointer;
+        }
+
+        .close-button:hover {
+            background: #465267;
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+    <!-- Background decoration -->
+
+    <div class="circle circle1"></div>
+    <div class="circle circle2"></div>
+    <div class="circle circle3"></div>
+
+
+    <!-- Header -->
+
+    <header>
+
+        <h1>📅 My Planner</h1>
+
+        <p>
+            Stay organized. Stay productive.
+        </p>
+
+    </header>
+
+
+    <!-- Main -->
+
+    <div class="main">
+
+        <div class="tasks-container">
+
+            <div class="section-title">
+
+                <h2>
+                    Upcoming Tasks / Events
+                </h2>
+
+                <p>
+                    Your scheduled activities
+                </p>
+
+            </div>
+
+
+            <ul id="taskList">
+
+                <div
+                    class="empty"
+                    id="emptyMessage">
+
+                    No upcoming tasks.
+                    <br><br>
+
+                    Click the + button to add one.
+
+                </div>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================
+         TOP RIGHT ADD BUTTON
+         ================================= -->
+
+    <div class="add-container">
+
+        <button
+            class="add-button"
+            onclick="openForm()">
+
+            <span class="plus">
+                +
+            </span>
+
+            <span class="add-label">
+                Add New Task
+            </span>
+
+        </button>
+
+    </div>
+
+
+    <!-- =================================
+         ADD TASK FORM
+         ================================= -->
+
+    <div
+        class="form-box"
+        id="formBox">
+
+        <h2>
+            ➕ Add New Task
+        </h2>
+
+
+        <input
+            type="text"
+            id="taskInput"
+            placeholder="Task or event name">
+
+
+        <input
+            type="date"
+            id="taskDate">
+
+
+        <input
+            type="time"
+            id="taskTime">
+
+
+        <button
+            class="save-button"
+            onclick="addTask()">
+
+            Add Task
+
+        </button>
+
+
+        <button
+            class="close-button"
+            onclick="closeForm()">
+
+            Cancel
+
+        </button>
+
+    </div>
+
+
+    <script>
+
+        /* Open form */
+
+        function openForm() {
+
+            document.getElementById("formBox")
+                .style.display = "block";
+
+        }
+
+
+        /* Close form */
+
+        function closeForm() {
+
+            document.getElementById("formBox")
+                .style.display = "none";
+
+        }
+
+
+        /* Add task */
+
+        function addTask() {
+
+            let task =
+                document.getElementById("taskInput").value;
+
+            let date =
+                document.getElementById("taskDate").value;
+
+            let time =
+                document.getElementById("taskTime").value;
+
+
+            if (task == "" || date == "" || time == "") {
+
+                alert(
+                    "Please enter task, date and time."
+                );
+
+                return;
+            }
+
+
+            /* Check future date/time */
+
+            let selected =
+                new Date(date + "T" + time);
+
+            let current =
+                new Date();
+
+
+            if (selected <= current) {
+
+                alert(
+                    "Please select a future date and time."
+                );
+
+                return;
+            }
+
+
+            /* Remove empty message */
+
+            let empty =
+                document.getElementById("emptyMessage");
+
+            if (empty) {
+                empty.remove();
+            }
+
+
+            /* Create task */
+
+            let li =
+                document.createElement("li");
+
+
+            li.innerHTML = `
+
+                <div class="task-info">
+
+                    <span class="task-name">
+                        ${task}
+                    </span>
+
+                    <span class="task-date">
+
+                        📅 ${formatDate(date)}
+
+                        &nbsp;&nbsp;
+
+                        🕐 ${time}
+
+                    </span>
+
+                </div>
+
+
+                <button
+                    class="delete"
+                    onclick="deleteTask(this)">
+
+                    Delete
+
+                </button>
+
+            `;
+
+
+            document
+                .getElementById("taskList")
+                .appendChild(li);
+
+
+            /* Clear */
+
+            document.getElementById("taskInput")
+                .value = "";
+
+            document.getElementById("taskDate")
+                .value = "";
+
+            document.getElementById("taskTime")
+                .value = "";
+
+
+            closeForm();
+
+        }
+
+
+        /* Format date */
+
+        function formatDate(date) {
+
+            let parts =
+                date.split("-");
+
+            return parts[2] +
+                "/" +
+                parts[1] +
+                "/" +
+                parts[0];
+
+        }
+
+
+        /* Delete task */
+
+        function deleteTask(button) {
+
+            button.parentElement.remove();
+
+        }
+
+    </script>
+
+</body>
+</html>
+```
